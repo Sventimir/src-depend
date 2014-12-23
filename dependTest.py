@@ -1,4 +1,5 @@
 import unittest
+import logging
 from module import Module
 from plugins.haskell import HaskellModule
 
@@ -48,4 +49,9 @@ class DependTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    logging.basicConfig(level=logging.DEBUG, filename='test.log', filemode='w')
+    unittest.main(exit=False)
+    print('\nTestlog:')
+    with open('test.log', 'r') as log:
+        for line in log:
+            print(line.strip())

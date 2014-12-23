@@ -1,4 +1,5 @@
 import os.path
+import logging
 import re
 
 class Module:
@@ -13,6 +14,7 @@ class Module:
         filename = re.sub(self.filename_ext + '$', '', file.name)
         self.__filename_components = tuple(os.path.split(filename))
         self.registry.add(self)
+        logging.debug('Module {} registered successfully.'.format(file.name))
 
     @property
     def directory(self):
