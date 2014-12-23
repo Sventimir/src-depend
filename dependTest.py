@@ -6,8 +6,9 @@ from plugins.haskell import HaskellModule
 
 class FileMock:
 
-    def __init__(self, filename):
+    def __init__(self, filename, content):
         self.name = filename
+        self.__content = content
 
     def __enter__(self):
         return self
@@ -15,13 +16,16 @@ class FileMock:
     def __exit__(self, type, value, traceback):
         return True
 
+    def __iter__(self):
+        return iter(self.__content)
+
 
 class DependTest(unittest.TestCase):
 
     def setUp(self):
-        with FileMock('Test/Core.hs') as file:
+        with FileMock('Test/Core.hs', ()) as file:
             self.moduleCore = HaskellModule(file)
-        with FileMock('Test/IO.hs') as file:
+        with FileMock('Test/IO.hs', ()) as file:
             self.moduleIO = HaskellModule(file)
 
     def tearDown(self):
@@ -43,7 +47,7 @@ class DependTest(unittest.TestCase):
         self.assertFalse(self.moduleCore in Module.registry)
 
     def test_module_is_not_gegistered_twice(self):
-        with FileMock('Test/Core.hs') as file:
+        with FileMock('Test/Core.hs', ()) as file:
             moduleCore = HaskellModule(file)
         self.assertEqual(2, len(HaskellModule.registry))
 
