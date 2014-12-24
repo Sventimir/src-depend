@@ -2,6 +2,7 @@ import unittest
 import logging
 from module import Module
 from plugins.haskell import HaskellModule
+import depend
 
 
 class FileMock:
@@ -42,6 +43,17 @@ contentApp = (
         'import qualified Test.IO as IO'
     )
 
+expected_grapth_source = (
+        'digraph {',
+        '\t"Test/IO.hs" [label="Test.IO"]',
+        '\t\t"Test/IO.hs" -> "Test/Core.hs"',
+        '\t"Test/Core.hs" [label="Test.Core"]',
+        '\t"Test/App.hs" [label="Test.App"]',
+        '\t\t"Test/App.hs" -> "Test/IO.hs"',
+        '\t\t"Test/App.hs" -> "Test/Core.hs"',
+        '}'
+    )
+
 class DependTest(unittest.TestCase):
 
     def createModule(self, name, descriptor):
@@ -63,6 +75,7 @@ class DependTest(unittest.TestCase):
     def tearDown(self):
         del self.moduleCore
         del self.moduleIO
+        del self.moduleApp
         HaskellModule.registry.clear()
 
     def test_name_splitting(self):
@@ -111,6 +124,12 @@ class DependTest(unittest.TestCase):
                 ('Test.Core', 'Test.IO'),
                 map(lambda el: el.name, self.moduleApp.dependencies)
             )
+
+    def test_make_graph(self):
+        HaskellModule.create_dependency_tree()
+        src = depend.make_graph(*HaskellModule.registry).source
+        for line in expected_grapth_source:
+            self.assertTrue(line in src)
 
 
 if __name__ == '__main__':

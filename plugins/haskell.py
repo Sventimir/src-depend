@@ -3,7 +3,6 @@ import logging
 import re
 
 
-
 class HaskellModule(module.Module):
 
     filename_ext = '.hs'
@@ -12,6 +11,7 @@ class HaskellModule(module.Module):
     import_regex = re.compile(r'^import(\s*qualified)?\s*([A-Z][A-Za-z0-9.]*).*$')
 
     def _parse_file(self, file):
+        self.__name = None
         for line in file:
             match = self.module_regex.match(line)
             if not match is None:
@@ -21,6 +21,8 @@ class HaskellModule(module.Module):
             if not match is None:
                 logging.info('Found module {} in {}'.format(match.group(2), self.name))
                 self._Module__dependencies[match.group(2)] = None
+        if self.__name is None:
+            self.__name = 'Main\n({})'.format(self.filename)
 
     @property
     def name(self):
