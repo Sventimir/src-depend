@@ -20,13 +20,45 @@ class FileMock:
         return iter(self.__content)
 
 
+contentCore = (
+        'module Test.Core where',
+        '',
+        'import Control.Monad (liftM)',
+        'import System.Exit'
+    )
+
+contentIO = (
+        'module Test.IO (',
+        '    io',
+        ') where',
+        '',
+        'import Test.Core'
+    )
+
+contentApp = (
+        '{#- LANGUAGE GADTs -#}',
+        'module Test.App where',
+        'import qualified Test.Core as Core',
+        'import qualified Test.IO as IO'
+    )
+
 class DependTest(unittest.TestCase):
 
+    def createModule(self, name, descriptor):
+        with descriptor as file:
+            try:
+                setattr(self, name, HaskellModule(file))
+            except Exception as e:
+                logging.error(e)
+                raise e
+
+    def assertOrderless(self, first, second):
+        self.assertEqual(set(first), set(second))
+
     def setUp(self):
-        with FileMock('Test/Core.hs', ()) as file:
-            self.moduleCore = HaskellModule(file)
-        with FileMock('Test/IO.hs', ()) as file:
-            self.moduleIO = HaskellModule(file)
+        self.createModule('moduleCore', FileMock('Test/Core.hs', contentCore))
+        self.createModule('moduleIO', FileMock('Test/IO.hs', contentIO))
+        self.createModule('moduleApp', FileMock('Test/App.hs', contentApp))
 
     def tearDown(self):
         del self.moduleCore
@@ -49,11 +81,45 @@ class DependTest(unittest.TestCase):
     def test_module_is_not_gegistered_twice(self):
         with FileMock('Test/Core.hs', ()) as file:
             moduleCore = HaskellModule(file)
-        self.assertEqual(2, len(HaskellModule.registry))
+        self.assertEqual(3, len(HaskellModule.registry))
+
+    def test_import_parsing(self):
+        self.assertOrderless(
+                ('Control.Monad', 'System.Exit'),
+                self.moduleCore.raw_dependencies
+            )
+        self.assertOrderless(
+                ('Test.Core', ),
+                self.moduleIO.raw_dependencies
+            )
+        self.assertOrderless(
+                ('Test.Core', 'Test.IO'),
+                self.moduleApp.raw_dependencies
+            )
+
+    def test_module_search(self):
+        HaskellModule.create_dependency_tree()
+        self.assertOrderless(
+                (None, None),
+                set(self.moduleCore.dependencies)
+            )
+        self.assertOrderless(
+                ('Test.Core', ),
+                map(lambda el: el.name, self.moduleIO.dependencies)
+            )
+        self.assertOrderless(
+                ('Test.Core', 'Test.IO'),
+                map(lambda el: el.name, self.moduleApp.dependencies)
+            )
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG, filename='test.log', filemode='w')
+    logging.basicConfig(
+            level=logging.INFO,
+            filename='test.log',
+            filemode='w',
+            format='[%(asctime)s; %(levelname)s]: %(message)s'
+        )
     unittest.main(exit=False)
     print('\nTestlog:')
     with open('test.log', 'r') as log:
