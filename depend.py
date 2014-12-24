@@ -1,3 +1,4 @@
+#! /usr/bin/python
 """Src-depend is a simple tool for sketching source code dependency graphs
 from source code itself. It iterates through all source code files in given
 directory, finds import statements and turns them into edges of a dependency
@@ -13,15 +14,23 @@ import re
 
 def parseargs():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-l', '--lang', dest='lang', default='python')
-    parser.add_argument('-s', '--source', dest='src_out')
-    parser.add_argument('-i', '--image', dest='img_out')
-    parser.add_argument('-d', '--debug', dest='debug', action='store_true')
-    parser.add_argument('-f', '--output-format', dest='format', default='png')
-    parser.add_argument('-e', '--exclude', dest='excludes', nargs='+', default=[])
-    parser.add_argument('--exclude-regex', dest='exclude-regex', default=None)
-    parser.add_argument('-q', '--quiet', dest='quiet', action='store_true')
-    parser.add_argument('target')
+    parser.add_argument('-l', '--lang', dest='lang', default='python',
+        help='specifies language plugin to be used (defaults to python)')
+    parser.add_argument('-s', '--source', dest='src_out',
+        help='output a dot source code to specified file')
+    parser.add_argument('-i', '--image', dest='img_out',
+        help='output sketched graph to specified file (appends extension automatiaclly)')
+    parser.add_argument('-d', '--debug', dest='debug', action='store_true',
+        help='debug mode')
+    parser.add_argument('-f', '--output-format', dest='format', default='png',
+        help='specifies output image\'s format (defaults to .png')
+    parser.add_argument('-e', '--exclude', dest='excludes', nargs='+', default=[],
+        help='a filename to ommit (multiple names possible)')
+    parser.add_argument('--exclude-regex', dest='exclude-regex', default=None,
+        help='filenames matching specified regex will be ignored')
+    parser.add_argument('-q', '--quiet', dest='quiet', action='store_true',
+        help='quiet mode')
+    parser.add_argument('target', help='source code directory to analyse')
     return parser.parse_args().__dict__
 
 

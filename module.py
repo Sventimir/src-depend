@@ -3,6 +3,16 @@ import logging
 import re
 
 class Module:
+    '''Base class for language plugins. In order to build your own language
+    plugin, create a source file in plugins/directory and define a Module class
+    there that inherits this one. Minimal implementation should contain:
+        * filename_ext property overwritten;
+        * preferably registry should be ovewritten with empty set;
+        * _parse_file() method which parses out imported modules from given file
+          and puts them as keys in _Module__dependecies dict (with None values).
+    In order to use the plugin, call depend.py with --lang parameter, specifying
+    your plugin's filename (without '.py' part). See plugins/haskell.py for an
+    example.'''
 
     filename_ext = ''
     registry = set()

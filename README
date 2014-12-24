@@ -1,0 +1,49 @@
+Src-depend is an open-source application designed to build dependency trees
+for applications under development. Specify a source directory of your project
+and programming language it's written in and src-depend will sketch a dependency
+graph for you, which can be output as png image or pdf or even dot source file.
+
+Latest SOURCE CODE may be obtained from: http://github.com/Sventimir/src-depend.
+
+AUTHOR:
+    Sventimir (svantimir@gmail.com)
+
+USAGE:
+   depend.py [-h] [-l LANG] [-s SRC_OUT] [-i IMG_OUT] [-d] [-f FORMAT]
+                 [-e EXCLUDES [EXCLUDES ...]] [--exclude-regex EXCLUDE-REGEX]
+                 [-q]
+                 target
+
+positional arguments:
+  target                source code directory to analyse
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -l LANG, --lang LANG  specifies language plugin to be used (defaults to
+                        python)
+  -s SRC_OUT, --source SRC_OUT
+                        output a dot source code to specified file
+  -i IMG_OUT, --image IMG_OUT
+                        output sketched graph to specified file (appends
+                        extension automatiaclly)
+  -d, --debug           debug mode
+  -f FORMAT, --output-format FORMAT
+                        specifies output image's format (defaults to .png
+  -e EXCLUDES [EXCLUDES ...], --exclude EXCLUDES [EXCLUDES ...]
+                        a filename to ommit (multiple names possible)
+  --exclude-regex EXCLUDE-REGEX
+                        filenames matching specified regex will be ignored
+  -q, --quiet           quiet mode
+
+DEPENDENCIES:
+    * python3 interpreter
+    * graphviz module for python (may be obtained with pip)
+
+EXTENSIONS:
+    For now only two programming languages are supported: Python and Haskell.
+    It's easy however to extend the application to other languages by writing
+    a plugin. A detailed instruction how to do it may be found in module.py's
+    docstrings. Existing plugins may also serve as an example.
+
+    Do not forget to issue a pull request, should you develop a new extension. ;)
+    Plugins without proper unit test suite won't be incorporated.
