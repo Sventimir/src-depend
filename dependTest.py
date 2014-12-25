@@ -43,12 +43,12 @@ contentApp = (
         'import qualified Test.IO as IO'
     )
 
-expected_grapth_source = (
+expected_graph_source = (
         'digraph {',
-        '\t"Test/IO.hs" [label="Test.IO"]',
+        '\t"Test/IO.hs" [label="Test.IO" group=Test]',
         '\t\t"Test/IO.hs" -> "Test/Core.hs"',
-        '\t"Test/Core.hs" [label="Test.Core"]',
-        '\t"Test/App.hs" [label="Test.App"]',
+        '\t"Test/Core.hs" [label="Test.Core" group=Test]',
+        '\t"Test/App.hs" [label="Test.App" group=Test]',
         '\t\t"Test/App.hs" -> "Test/IO.hs"',
         '\t\t"Test/App.hs" -> "Test/Core.hs"',
         '}'
@@ -127,8 +127,16 @@ class DependTest(unittest.TestCase):
     def test_make_graph(self):
         HaskellModule.create_dependency_tree()
         src = depend.make_graph(*HaskellModule.registry).source
-        for line in expected_grapth_source:
+        for line in expected_graph_source:
             self.assertTrue(line in src)
+
+    def test_remove_redundant_dependencies(self):
+        HaskellModule.create_dependency_tree()
+        HaskellModule.remove_redundant_dependencies()
+        self.assertOrderless(
+                ('Test.IO', ),
+                map(lambda el: el.name, self.moduleApp.dependencies)
+            )
 
 
 if __name__ == '__main__':

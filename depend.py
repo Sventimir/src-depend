@@ -22,6 +22,8 @@ def parseargs():
         help='debug mode')
     parser.add_argument('-f', '--output-format', dest='format', default='png',
         help='specifies output image\'s format (defaults to .png')
+    parser.add_argument('-r', '--remove-redundant', dest='remove-redundant',
+            action='store_true', help='remove direct dependencies on modules that module depends on idirectly')
     parser.add_argument('-e', '--exclude', dest='excludes', nargs='+', default=[],
         help='a filename to ommit (multiple names possible)')
     parser.add_argument('--exclude-regex', dest='exclude-regex', default=None,
@@ -58,6 +60,8 @@ def main(args):
             plugin.Module(file, args['target'])
 
     plugin.Module.create_dependency_tree()
+    if args['remove-redundant']:
+        plugin.Module.remove_redundant_dependencies()
     graph = make_graph(*plugin.Module.registry)
     graph.format = args['format']
 

@@ -22,6 +22,24 @@ class Module:
         for module in cls.registry:
             module.find_dependencies()
 
+    @classmethod
+    def remove_redundant_dependencies(cls):
+        '''Iterates over registered modules and for each of them removes all
+        direct dependencies that also exist indirectly. For instance if A
+        depends on B and C, and B also depends on C, then dependency of A on C
+        is considered redundant.'''
+        redundant = {}
+        for module in cls.registry:
+            redundant[module] = module.find_redundant_deps()
+            logging.debug('{} depends on: {}'.format(module.name, redundant[module]))
+        for mod, deps in redundant.items():
+            for d in deps:
+                logging.debug('Removing redundant dependency of {} on {}.'.format(
+                        mod.name, d
+                    ))
+                del mod.__dependencies[d]
+
+
     def __init__(self, file, root_dir=os.path.curdir):
         '''Constructor. Takes a file descriptor as an argument and reads it
         eagerly so that the descriptor can be closed rigth away after creating
@@ -66,6 +84,18 @@ class Module:
                 if module_name == module.name:
                     self.__dependencies[module_name] = module
                     break
+
+    def find_redundant_deps(self):
+        redundant = set()
+        direct_deps = set(self.raw_dependencies)
+        for dep in direct_deps:
+            if self.__dependencies[dep] is None:
+                continue
+            indirect_deps = set(self.__dependencies[dep].raw_dependencies)
+            for red in direct_deps.intersection(indirect_deps):
+                redundant.add(red)
+        return redundant
+
 
     def __repr__(self):
         return '<{0} {1}>'.format(self.__class__.__name__, self.name)
