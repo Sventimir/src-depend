@@ -23,7 +23,7 @@ def parseargs():
     parser.add_argument('-f', '--output-format', dest='format', default='png',
         help='specifies output image\'s format (defaults to .png')
     parser.add_argument('-r', '--remove-redundant', dest='remove-redundant',
-            action='store_true', help='remove direct dependencies on modules that module depends on idirectly')
+            action='store_true', help='remove direct dependencies on modules that module depends on indirectly')
     parser.add_argument('-e', '--exclude', dest='excludes', nargs='+', default=[],
         help='a filename to ommit (multiple names possible)')
     parser.add_argument('--exclude-regex', dest='exclude-regex', default=None,
