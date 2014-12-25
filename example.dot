@@ -1,0 +1,12 @@
+digraph {
+	"dependTest.py" [label=dependTest]
+		"dependTest.py" -> "module.py"
+		"dependTest.py" -> "plugins/haskell.py"
+		"dependTest.py" -> "depend.py"
+	"plugins/haskell.py" [label="plugins.haskell"]
+		"plugins/haskell.py" -> "module.py"
+	"module.py" [label=module]
+	"depend.py" [label=depend]
+	"plugins/python.py" [label="plugins.python"]
+		"plugins/python.py" -> "module.py"
+}
