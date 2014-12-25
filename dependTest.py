@@ -91,9 +91,8 @@ class DependTest(unittest.TestCase):
     def test_module_classes_have_different_registries(self):
         self.assertFalse(self.moduleCore in Module.registry)
 
-    def test_module_is_not_gegistered_twice(self):
-        with FileMock('Test/Core.hs', ()) as file:
-            moduleCore = HaskellModule(file)
+    def test_module_is_not_registered_twice(self):
+        self.createModule('TestIO', FileMock('Test/IO.hs', contentIO))
         self.assertEqual(3, len(HaskellModule.registry))
 
     def test_import_parsing(self):

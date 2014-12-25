@@ -16,9 +16,7 @@ def parseargs():
     parser = argparse.ArgumentParser()
     parser.add_argument('-l', '--lang', dest='lang', default='python',
         help='specifies language plugin to be used (defaults to python)')
-    parser.add_argument('-s', '--source', dest='src_out',
-        help='output a dot source code to specified file')
-    parser.add_argument('-i', '--image', dest='img_out',
+    parser.add_argument('-o', '--output', dest='img_out',
         help='output sketched graph to specified file (appends extension automatiaclly)')
     parser.add_argument('-d', '--debug', dest='debug', action='store_true',
         help='debug mode')
@@ -57,12 +55,11 @@ def main(args):
     files = find_source_files(args['target'], plugin.Module.filename_ext, is_excluded)
     for f in files:
         with open(f, 'r') as file:
-            plugin.Module(file)
+            plugin.Module(file, args['target'])
 
     plugin.Module.create_dependency_tree()
     graph = make_graph(*plugin.Module.registry)
     graph.format = args['format']
-    write_file(args['src_out'], graph.source, 'source')
 
     if not args['img_out'] is None:
         output = graph.render(args['img_out'])
@@ -99,16 +96,6 @@ def find_source_files(path, ext, is_excluded):
                 yield el
     else:
         logging.debug('{} is not a source file.'.format(path))
-
-
-def write_file(file, content, what):
-    if not file is None:
-        try:
-            with open(file, 'w') as file:
-                logging.info('Writing graph {} to: {}...'.format(what, file.name))
-                file.writelines(content)
-        except IOError:
-            logging.error('Could not write to: {}!'.format(file))
 
 
 def exclude_checker(excluded, regex):

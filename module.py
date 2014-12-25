@@ -22,11 +22,12 @@ class Module:
         for module in cls.registry:
             module.find_dependencies()
 
-    def __init__(self, file):
+    def __init__(self, file, root_dir=os.path.curdir):
         '''Constructor. Takes a file descriptor as an argument and reads it
         eagerly so that the descriptor can be closed rigth away after creating
         the Module object.'''
-        filename = re.sub(self.filename_ext + '$', '', file.name)
+        filename = os.path.relpath(file.name, root_dir)
+        filename = re.sub(self.filename_ext + '$', '', filename)
         self.__filename_components = tuple(os.path.split(filename))
         self.__dependencies = {}
         self._parse_file(file)
@@ -39,7 +40,7 @@ class Module:
 
     @property
     def name(self):
-        return '.'.join(self._Module__filename_components)
+        return '.'.join(self._Module__filename_components).strip('.')
 
     @property
     def filename(self):

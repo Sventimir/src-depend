@@ -21,9 +21,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -l LANG, --lang LANG  specifies language plugin to be used (defaults to
                         python)
-  -s SRC_OUT, --source SRC_OUT
-                        output a dot source code to specified file
-  -i IMG_OUT, --image IMG_OUT
+  -o IMG_OUT, --output IMG_OUT
                         output sketched graph to specified file (appends
                         extension automatiaclly)
   -d, --debug           debug mode
