@@ -34,6 +34,10 @@ optional arguments:
                         filenames matching specified regex will be ignored
   -q, --quiet           quiet mode
 
+SUPPORTED LANGUAGES:
+    * Python
+    * Haskell
+
 DEPENDENCIES:
     * python3 interpreter
     * graphviz module for python (may be obtained with pip)
