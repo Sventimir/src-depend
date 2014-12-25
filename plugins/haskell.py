@@ -24,6 +24,15 @@ class HaskellModule(module.Module):
         if self.__name is None:
             self.__name = 'Main\n({})'.format(self.filename)
 
+    def _assign_attributes(self):
+        package = ''
+        if self.__name.startswith('Main'):
+            package = 'main'
+        elif '.' in self.__name:
+            package = self.__name.rsplit('.', 1)
+        if package != '':
+            self._Module__attributes['group'] = package[0]
+
     @property
     def name(self):
         return self.__name

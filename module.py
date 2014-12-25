@@ -30,7 +30,9 @@ class Module:
         filename = re.sub(self.filename_ext + '$', '', filename)
         self.__filename_components = tuple(os.path.split(filename))
         self.__dependencies = {}
+        self.__attributes = {}
         self._parse_file(file)
+        self._assign_attributes()
         self.registry.add(self)
         logging.debug('Module {} registered successfully.'.format(file.name))
 
@@ -53,6 +55,10 @@ class Module:
     @property
     def dependencies(self):
         return self.__dependencies.values()
+
+    @property
+    def attributes(self):
+        return self.__attributes
 
     def find_dependencies(self):
         for module_name in self.__dependencies.keys():
@@ -79,3 +85,7 @@ class Module:
         self._dependencies field to hold names of all modules this one depends
         upon."""
         raise NotImplementedError()
+
+    def _assign_attributes(self):
+        '''May optionally be overridden in derived class.'''
+        pass

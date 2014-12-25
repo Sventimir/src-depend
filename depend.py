@@ -69,7 +69,7 @@ def main(args):
 def make_graph(*modules):
     graph = graphviz.Digraph()
     for module in modules:
-        graph.node(module.filename, module.name)
+        graph.node(module.filename, module.name, module.attributes)
         logging.debug('Creating node {}...'.format(module.name))
         for dep in module.dependencies:
             if not dep is None:
