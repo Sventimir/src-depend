@@ -23,7 +23,8 @@ optional arguments:
                         python)
   -o IMG_OUT, --output IMG_OUT
                         output sketched graph to specified file (appends
-                        extension automatiaclly)
+                        extension automatiaclly). Source will be output to
+                        IMG_OUT file.
   -d, --debug           debug mode
   -f FORMAT, --output-format FORMAT
                         specifies output image's format (defaults to .png

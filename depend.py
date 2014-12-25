@@ -17,7 +17,7 @@ def parseargs():
     parser.add_argument('-l', '--lang', dest='lang', default='python',
         help='specifies language plugin to be used (defaults to python)')
     parser.add_argument('-o', '--output', dest='img_out',
-        help='output sketched graph to specified file (appends extension automatiaclly)')
+        help='output sketched graph to specified file (appends extension automatiaclly); source will be output to IMG_OUT')
     parser.add_argument('-d', '--debug', dest='debug', action='store_true',
         help='debug mode')
     parser.add_argument('-f', '--output-format', dest='format', default='png',
